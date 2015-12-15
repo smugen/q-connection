@@ -37,6 +37,8 @@ function adapt(port, origin) {
         }
     } else if (port.get && port.put) {
         return port;
+    } else if (port.write) {
+        send = port.write;
     } else {
         throw new Error("An adaptable message port required");
     }
@@ -50,6 +52,9 @@ function adapt(port, origin) {
         port.on("message", function (data) {
             queue.put(data);
         }, false);
+        port.on('data', function (data) {
+            queue.put(data);
+        });
     // Chrome extension message ports
     } else if (port.onMessage) {
         port.onMessage.addListener(function (message) {
