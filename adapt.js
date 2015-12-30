@@ -39,6 +39,11 @@ function adapt(port, origin) {
         return port;
     } else if (port.write) {
         send = port.write;
+        if (port.on) {
+            port.on('close', function () {
+                queue.close();
+            })
+        }
     } else {
         throw new Error("An adaptable message port required");
     }
